@@ -1,0 +1,25 @@
+{
+  "name": "grown-alchemist-migration-script",
+  "version": "1.0.0",
+  "description": "Script migration Magento to Shopify",
+  "main": "main/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marin73tomas/grown-alchemist-migration-script.git"
+  },
+  "author": "Tomas Marin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marin73tomas/grown-alchemist-migration-script/issues"
+  },
+  "homepage": "https://github.com/marin73tomas/grown-alchemist-migration-script#readme",
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "iso-3166-2": "^1.0.0",
+    "node-csv": "^0.1.2"
+  }
+}
