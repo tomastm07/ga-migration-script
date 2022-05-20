@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/marin73tomas/grown-alchemist-migration-script#readme",
   "dependencies": {
-    "csv-parser": "^3.0.0",
+    "csv": "^6.0.5",
     "csv-writer": "^1.6.0",
     "iso-3166-2": "^1.0.0"
   }
