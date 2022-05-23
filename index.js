@@ -149,7 +149,7 @@ function writeFilesFromShopifyNoAddress(){
                 if(err){
                     console.log('error');
                 } else {
-                    console.log('se migro')
+                    console.log('succesfully migrated')
                 }
             });
         })
