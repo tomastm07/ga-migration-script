@@ -90,24 +90,24 @@ function setAllInformation(address, index, customer) {
     if(address.Province != undefined){
         if(index == 0){
             allCustomer[allCustomer.length] = {
-                Email: customer.email,
                 'First Name': customer.firstname,
                 'Last Name': customer.lastname,
+                Email: customer.email,
                 ...address
             }
         } else {
             allCustomer[allCustomer.length] = {
-                Email: '',
                 'First Name': '',
                 'Last Name': '',
+                Email: customer.email,
                 ...address
             }
         }
     } else{
         allCustomerNoProvince[allCustomerNoProvince.length] = {
-            Email: customer.email,
             'First Name': customer.firstname,
             'Last Name': customer.lastname,
+            Email: customer.email,
             ...address
         }
     }
@@ -127,7 +127,7 @@ function writeFilesFromShopify(){
                 if(err){
                     console.log('error');
                 } else {
-                    console.log('se migro')
+                    console.log('se migro');
                 }
             });
         })
