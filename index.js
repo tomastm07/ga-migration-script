@@ -7,6 +7,7 @@ const iso3166 = require('iso-3166-2');
 const country = {}
 var allCustomer = [];
 var allCustomerNoProvince = [];
+var maxResults = 5000;
 
 PATH_CUSTOMER = path.resolve('docs', 'customer.csv');
 PATH_CUSTOMER_ADDRESS = path.resolve('docs', 'customer_address.csv');
@@ -92,7 +93,7 @@ function setAllInformation(address, index, customer) {
             allCustomer[allCustomer.length] = {
                 'First Name': customer.firstname,
                 'Last Name': customer.lastname,
-                Email: customer.email,
+                Email: customer.email.toLowerCase(),
                 ...address
             }
         } else {
@@ -107,7 +108,8 @@ function setAllInformation(address, index, customer) {
         allCustomerNoProvince[allCustomerNoProvince.length] = {
             'First Name': customer.firstname,
             'Last Name': customer.lastname,
-            Email: customer.email,
+            Email: customer.email.toLowerCase(),
+            Note: 'Error in fields',
             ...address
         }
     }
@@ -120,40 +122,50 @@ function writeFilesFromShopify(){
             writeFilesFromShopify();
         });
     } else {
-        stringify.stringify(allCustomer, {
-            header: true
-        }, (error, output) => {
-            fs.writeFile(`${PATH_CUSTOMER_SHOPIFY}/customer.csv`, output, (err) => {
-                if(err){
-                    console.log('error');
-                } else {
-                    console.log('se migro');
-                }
-            });
-        })
+        var presentResults = 0;
+        var sizeFile = Math.ceil(allCustomer.length / maxResults);
+        var nextResults = maxResults;
+        for (let i = 0; i < sizeFile; i++) {
+            const resultConvert = convertCsvShopify(allCustomer.slice(presentResults, nextResults), 'customer', i);
+            presentResults = (maxResults * (i + 1)) + 1;
+            nextResults = (maxResults * (i + 2));
+        }
     }
-    
 }
 
-function writeFilesFromShopifyNoAddress(){
+async function writeFilesFromShopifyNoAddress(){
     if(!fs.existsSync(PATH_CUSTOMER_SHOPIFY_NO_PROVINCE)){
         fs.mkdir(PATH_CUSTOMER_SHOPIFY_NO_PROVINCE, (err) => {
             if(err) console.log(err);
             writeFilesFromShopifyNoAddress();            
         });
     } else {
-        stringify.stringify(allCustomerNoProvince, {
+        var presentResults = 0;
+        var sizeFile = Math.ceil(allCustomerNoProvince.length / maxResults);
+        var nextResults = maxResults;
+        for (let i = 0; i < sizeFile; i++) {
+            const result = await convertCsvShopify(allCustomerNoProvince.slice(presentResults, nextResults), 'customer_no_province', i);
+            presentResults = (maxResults * (i + 1)) + 1;
+            nextResults = (maxResults * (i + 2));
+        }
+    }
+}
+
+function convertCsvShopify(listResult, nameFile, index){
+    return new Promise((resolve, reject) => {
+        stringify.stringify(listResult, {
             header: true
         }, (err, output) => {
-            fs.writeFile(`${PATH_CUSTOMER_SHOPIFY_NO_PROVINCE}/customer_no_province.csv`, output, (err) =>{
+            fs.writeFile(`${PATH_CUSTOMER_SHOPIFY_NO_PROVINCE}/${nameFile}_${index + 1}.csv`, output, (err) =>{
                 if(err){
-                    console.log('error');
+                    reject(false);
                 } else {
-                    console.log('se migro')
+                    console.log('file created');
+                    resolve(true);
                 }
             });
-        })
-    }
+        });
+    })
 }
 
 joinDataCustomer();
