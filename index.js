@@ -16,9 +16,9 @@ PATH_CUSTOMER_SHOPIFY = path.resolve('docs', 'shopify')
 PATH_CUSTOMER_SHOPIFY_NO_PROVINCE = path.resolve('docs', 'shopify');
 
 /**
- * Funcion para leer el archivo csv
- * @param {*} path Ubicacion del archivo csv
- * @returns Data extraida del csv
+ * Function to read the csv file
+ * @param {*} path Location of the csv file
+ * @returns Data extracted from the csv file
  */
 async function getDataFromCsv(path) {
     const fileContent = await fs.promises.readFile(path);
@@ -26,17 +26,17 @@ async function getDataFromCsv(path) {
 }
 
 /**
- * Funcion para retornar los datos de un archivo csv
- * @param {*} content Contenido del archivo csv
+ * Function to return the data from a csv file.
+ * @param {*} content Contents of the csv file
  * @param {*} column 
- * @returns Datos del archivo csv
+ * @returns Data of the csv file
  */
 function getData(content, column) {
     return parse.parse(content, { columns: column });
 }
 
 /**
- * Function para unir la data de los archivo
+ * Function for merging file data
  * PATH_CUSTOMER
  * PATH_CUSTOMER_ADDRESS
  */
@@ -57,9 +57,9 @@ async function joinDataCustomer() {
 }
 
 /**
- * Funcion para retornar la direccion del cliente
- * @param {*} addres objeto direccion del csv 
- * @returns Objeto aceptado por shopify
+ * Function to return the client's address
+ * @param {*} addres object address from csv 
+ * @returns Object accepted by shopify
  */
 function getCustomerAddress(addres){
     return {
@@ -76,12 +76,12 @@ function getCustomerAddress(addres){
 }
 
 /**
- * Funcion para transformar la información del pais
- * en iso code aceptado por Shopify
- * @param {*} regionID   Codigo de la región
- * @param {*} countryId  Codigo del pais
- * @param {*} region     Nombre de la provincia
- * @returns Objeto con la informacion del pais, si es null es porque no existe
+ * Function to transform the country information
+ * in iso code accepted by Shopify
+ * @param {*} regionID Region code
+ * @param {*} countryId Country ID Country code
+ * @param {*} region Name of province
+ * @returns Object with the country information, if null it is because it does not exist
  */
 function getIsoCountry(regionID, countryId, region) {
     return country[regionID] ??= iso3166.subdivision(countryId, region);
