@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Script migration Magento to Shopify",
   "main": "main/index.js",
+  "migration": "node ./scripts/migration/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

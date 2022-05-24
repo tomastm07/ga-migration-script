@@ -9,11 +9,11 @@ var allCustomer = [];
 var allCustomerNoProvince = [];
 var maxResults = 5000;
 
-PATH_CUSTOMER = path.resolve('docs', 'customer.csv');
-PATH_CUSTOMER_ADDRESS = path.resolve('docs', 'customer_address.csv');
+PATH_CUSTOMER = path.resolve('data-migration', 'input', 'customer' , 'customer.csv');
+PATH_CUSTOMER_ADDRESS = path.resolve('data-migration', 'input' , 'customer', 'customer_address.csv');
 
-PATH_CUSTOMER_SHOPIFY = path.resolve('docs', 'shopify')
-PATH_CUSTOMER_SHOPIFY_NO_PROVINCE = path.resolve('docs', 'shopify');
+PATH_CUSTOMER_SHOPIFY = path.resolve('data-migration', 'output' ,'customer')
+PATH_CUSTOMER_SHOPIFY_NO_PROVINCE = path.resolve('data-migration', 'output', 'error');
 
 /**
  * Function to read the csv file
@@ -64,13 +64,14 @@ async function joinDataCustomer() {
 function getCustomerAddress(addres){
     return {
         Company: addres.company,
-        Phone: addres.telephone,
-        City: addres.city,
         Address1: addres.street,
-        Zip: addres.postcode,
+        Address2: '',
+        City: addres.city,
         Province: getIsoCountry(addres.region_id, addres.country_id, addres.region)?.name,
         'Province Code': getIsoCountry(addres.region_id, addres.country_id, addres.region)?.regionCode,
         Country: getIsoCountry(addres.region_id, addres.country_id, addres.region)?.countryName,
+        Zip: addres.postcode,
+        Phone: addres.telephone,
         'Country Code': getIsoCountry(addres.region_id, addres.country_id, addres.region)?.countryCode
     }
 }
@@ -126,7 +127,8 @@ function writeFilesFromShopify(){
         var sizeFile = Math.ceil(allCustomer.length / maxResults);
         var nextResults = maxResults;
         for (let i = 0; i < sizeFile; i++) {
-            const resultConvert = convertCsvShopify(allCustomer.slice(presentResults, nextResults), 'customer', i);
+            const resultConvert = convertCsvShopify(allCustomer.slice(presentResults, nextResults), 
+                                                    `${PATH_CUSTOMER_SHOPIFY}/customer_${i + 1}.csv`);
             presentResults = (maxResults * (i + 1)) + 1;
             nextResults = (maxResults * (i + 2));
         }
@@ -144,19 +146,20 @@ async function writeFilesFromShopifyNoAddress(){
         var sizeFile = Math.ceil(allCustomerNoProvince.length / maxResults);
         var nextResults = maxResults;
         for (let i = 0; i < sizeFile; i++) {
-            const result = await convertCsvShopify(allCustomerNoProvince.slice(presentResults, nextResults), 'customer_no_province', i);
+            const result = await convertCsvShopify(allCustomerNoProvince.slice(presentResults, nextResults), 
+                                                  `${PATH_CUSTOMER_SHOPIFY_NO_PROVINCE}/customer_error_${i + 1}.csv`);
             presentResults = (maxResults * (i + 1)) + 1;
             nextResults = (maxResults * (i + 2));
         }
     }
 }
 
-function convertCsvShopify(listResult, nameFile, index){
+function convertCsvShopify(listResult, path){
     return new Promise((resolve, reject) => {
         stringify.stringify(listResult, {
             header: true
         }, (err, output) => {
-            fs.writeFile(`${PATH_CUSTOMER_SHOPIFY_NO_PROVINCE}/${nameFile}_${index + 1}.csv`, output, (err) =>{
+            fs.writeFile(path, output, (err) =>{
                 if(err){
                     reject(false);
                 } else {
